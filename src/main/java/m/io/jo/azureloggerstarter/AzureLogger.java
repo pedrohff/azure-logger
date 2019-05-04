@@ -1,4 +1,4 @@
-package br.com.conductor.azureloggerstarter;
+package m.io.jo.azureloggerstarter;
 
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
@@ -18,17 +18,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Component
+@AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
+@Configuration
 public class AzureLogger {
     private static final String SPL_CHAR_REGEX = "[-+.^:,]";
     private static final String UNDERSCORE = "_";

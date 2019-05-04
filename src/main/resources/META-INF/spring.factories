@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+m.io.jo.azureloggerstarter.Azure,\
+m.io.jo.azureloggerstarter.AzureLogger
