@@ -50,7 +50,12 @@ public class AzureLogger {
         this.restTemplate = restTemplateBuilder.build();
         this.azure = azure;
     }
-
+    
+    /**
+     * Sends logs to Azure Monitor, if {@link Azure#enabled} is true
+     * 
+     * @param json The stringified JSON message
+     */
     @Async
     public void pushLogsToAzure(String json) {
         if (azure == null || StringUtils.isEmpty(azure.getWorkspaceId()) || StringUtils.isEmpty(azure.getSharedKey()) || !azure.isEnabled()) {
@@ -67,7 +72,12 @@ public class AzureLogger {
 
         restTemplate.exchange(azureLogRqst, String.class);
     }
-
+    
+    /**
+     * Sends system logs to Azure Monitor
+     * 
+     * @param json The stringified JSON message
+     */
     public void pushSysLogsToAzure(String json) {
 
         if (azure == null || StringUtils.isEmpty(azure.getWorkspaceId()) || StringUtils.isEmpty(azure.getSharedKey()) || !azure.isEnabled()) {
@@ -86,7 +96,14 @@ public class AzureLogger {
             asyncRestTemplate.exchange(azureLogRqst, String.class);
         }).start();
     }
-
+    
+    /**
+     * Setup used to send messages to Azure Monitor
+     * 
+     * @param json The message to be sent
+     * @param isSysLog Identifies if it is a System Log
+     * @return
+     */
     private RequestEntity<String> constructHttpEntity(String json, Boolean isSysLog) {
         TimeZone tz = TimeZone.getTimeZone("UTC");
         DateFormat df = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ssZ", Locale.US);
@@ -110,7 +127,15 @@ public class AzureLogger {
         return new RequestEntity<String>(json, httpHeaders, HttpMethod.POST,
                 UriComponentsBuilder.fromHttpUrl(azueLogUrl).build().toUri());
     }
-
+    
+    /**
+     * Used for authenticating to Azure Monitor
+     * 
+     * @param jsonBody The stringified JSON message
+     * @param isSysLog Identifies if the message is a System Log
+     * @param date Date of the log
+     * @return
+     */
     private String computeAuthHdr(String jsonBody, Boolean isSysLog, String date) {
         Integer bodyLength = jsonBody.length();
         if (!isSysLog) {
@@ -120,7 +145,13 @@ public class AzureLogger {
                 + "\n" + "/api/logs";
         return createAuthorizationHeader(signString);
     }
-
+    
+    /**
+     * Sets up the required encrypted message for authentication
+     * 
+     * @param canonicalizedString The string created on {@link #computeAuthHdr(String, Boolean, String)}
+     * @return The authentication string
+     */
     private String createAuthorizationHeader(String canonicalizedString) {
         String authStr = null;
         try {
@@ -135,7 +166,15 @@ public class AzureLogger {
         }
         return authStr;
     }
-
+    
+    /**
+     * Sets up the type of log that is being sent to Azure Monitor
+     * 
+     * @param appName The name of the app ({@link #appName})
+     * @param appVersion The version of the app ({@link #appVersion})
+     * @param isSysLog Identifies if the message is a System Log
+     * @return The header used to identify the type of log
+     */
     public static String constructAzureLogNm(String appName, String appVersion, Boolean isSysLog) {
         String logTypeInd = null;
         String filteredAppNm = StringUtils.replaceAll(appName, SPL_CHAR_REGEX, "");
