@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>m.io.jo</groupId>
 	<artifactId>azure-logger-spring-boot-starter</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<name>Azure Monitor Logger Auto Configuration</name>
 	<description>Configuration for Azure Monitor Logger</description>
